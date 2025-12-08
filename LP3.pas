@@ -1,4 +1,4 @@
-﻿program Lab3;
+program Lab3;
 
 uses crt;
 
@@ -28,7 +28,7 @@ begin
   if step mod 2 = 1 then
     step := step + 1;
   
-  h := (b - a) / step;//ширина каждого прямоугольника
+  h := (b - a) / step;//ширина отрезков
   sum := 0.0;//сумма интеграла 
   for i := 0 to step - 1 do
   begin
@@ -42,7 +42,7 @@ begin
   
 end;
 
-procedure checkData(LowLim, UpLim: real; step: integer);//проверка данных
+procedure CheckData(LowLim, UpLim: real; step: integer);//проверка данных
 begin
   clrscr;
   if (UpLim > LowLim) and (step > 0) then
@@ -51,7 +51,7 @@ begin
       LowLim := root; 
     if UpLim < root then
       UpLim := root;
-      writeln('Рассчет интеграла 2 * x ^ 3 + (1) * x ^ 2 + (3) * x + (5) ');
+      writeln('Рассчет интеграла x^3-x^2-2*x+18');
       result := Simpson(LowLim, UpLim, step);
       NL := abs(PervCurve(LowLim) - PervCurve(UpLim));
       writeln('Метод Симпсона: ', result:0:4);
@@ -71,7 +71,7 @@ begin
   end;
 end;
 
-procedure error(var a, b: real; result: real);
+procedure Error(var a, b: real; result: real);
 var
   absoluteError, relativelError: real;
 begin
@@ -162,7 +162,7 @@ begin
              else
                TextColor(White);
              
-             writeln('[0] - Выход');
+             writeln('[6] - Выход');
            end;
         else TextColor(White);
           
@@ -171,7 +171,7 @@ begin
 
     writeln('');
     TextColor(LightBlue);
-    writeln('Рассчет интеграла 1 * x ^ 3 + (-1) * x ^ 2 + (-2) * x + (18)');
+    writeln('Рассчет интеграла x^3-x^2-2*x+18');
     TextColor(LightBlue);
     writeln('Корень уравнения = -2.54573...');
     TextColor(LightGreen);
@@ -218,8 +218,8 @@ begin
                 Readln(step);
                 clrscr;
               end;
-            4: checkData(LowLim, UpLim, step); // проверка данных
-            5: error(LowLim, UpLim, step); // расчет погрешности
+            4: CheckData(LowLim, UpLim, step); // проверка данных
+            5: Error(LowLim, UpLim, step); // расчет погрешности
             6: exit; // выход
           end;
         end;
