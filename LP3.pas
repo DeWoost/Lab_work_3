@@ -9,6 +9,7 @@ var
   key: char;
   UpLim, LowLim, result, NL: real;
   step, i, mN: integer;
+  checkSim, checkLowLim, checkUpLim, checkStep: boolean;
 
 function PervCurve(x: real): real;//первообразная
 begin
@@ -45,53 +46,23 @@ end;
 procedure CheckData(LowLim, UpLim: real; step: integer);//проверка данных
 begin
   clrscr;
-  if (UpLim > LowLim) and (step > 0) then
-    begin
-    if LowLim < root then
-      LowLim := root; 
-    if UpLim < root then
-      UpLim := root;
-      writeln('Рассчет интеграла x^3-x^2-2*x+18');
-      result := Simpson(LowLim, UpLim, step);
-      NL := abs(PervCurve(LowLim) - PervCurve(UpLim));
-      writeln('Метод Симпсона: ', result:0:4);
-      writeln('Метод Ньютона-Лейбница: ', NL:0:4);
-      writeln('');
-      writeln('Нажмите Enter для продолжения...');
-      readln();
-      clrscr;
-    end
-  else
-  begin//сообщение об ошибке данных
-    writeln('Неверный формат данных!');
-    writeln('');
-    writeln('Нажмите Enter для продолжения...');
-    readln();
-    clrscr;
-  end;
-end;
-
-procedure Error(var a, b: real; result: real);
-var
-  absoluteError, relativelError: real;
-begin
-  clrscr;
-  if (UpLim > LowLim) and (step > 0) then
-    begin
-    if LowLim < root then
-      LowLim := root;
-    if UpLim < root then
-      UpLim := root;
-      result := Simpson(LowLim, UpLim, step);
-      NL := abs(PervCurve(b) - PervCurve(a));
-      absoluteError := abs(NL - result);//абсолютная погрешность 
-      relativelError := abs(absoluteError / NL) * 100;//относительная погрешность
-      writeln('Абсолютная погрешность: ', absoluteError:0:4);
-      writeln('Относительная погрешность: ', relativelError:0:2, '%');
-      writeln('');
-      writeln('Нажмите Enter для продолжения...');
-      readln();
-      clrscr;  
+  if checkLowLim and checkUpLim and checkStep then
+    if (UpLim > LowLim) and (step > 0) then
+      begin
+      if LowLim < root then
+        LowLim := root; 
+      if UpLim < root then
+        UpLim := root;
+        writeln('Расчет интеграла x^3-x^2-2*x+18');
+        result := Simpson(LowLim, UpLim, step);
+        NL := abs(PervCurve(LowLim) - PervCurve(UpLim));
+        writeln('Метод Симпсона: ', result:0:4);
+        writeln('Метод Ньютона-Лейбница: ', NL:0:4);
+        writeln('');
+        writeln('Нажмите Enter для продолжения...');
+        readln();
+        clrscr;
+        checkSim := true;
       end
     else
     begin//сообщение об ошибке данных
@@ -100,16 +71,66 @@ begin
       writeln('Нажмите Enter для продолжения...');
       readln();
       clrscr;
-    end;
+    end
+   else
+     begin
+     writeln('Введены не все данные!');
+     writeln('');
+     writeln('Нажмите Enter для продолжения...');
+     readln();
+     clrscr;
+     end;
+end;
+
+procedure Error(var a, b: real; result: real);
+var
+  absoluteError, relativelError: real;
+begin
+  clrscr;
+  if checkSim then
+    if (UpLim > LowLim) and (step > 0) then
+      begin
+      if LowLim < root then
+        LowLim := root;
+      if UpLim < root then
+        UpLim := root;
+        result := Simpson(LowLim, UpLim, step);
+        NL := abs(PervCurve(b) - PervCurve(a));
+        absoluteError := abs(NL - result);//абсолютная погрешность 
+        relativelError := abs(absoluteError / NL) * 100;//относительная погрешность
+        writeln('Абсолютная погрешность: ', absoluteError:0:4);
+        writeln('Относительная погрешность: ', relativelError:0:2, '%');
+        writeln('');
+        writeln('Нажмите Enter для продолжения...');
+        readln();
+        clrscr;  
+        end
+      else
+      begin//сообщение об ошибке данных
+        writeln('Неверный формат данных!');
+        writeln('');
+        writeln('Нажмите Enter для продолжения...');
+        readln();
+        clrscr;
+      end
+     else
+       begin
+       writeln('Выполните расчет интеграла!');
+       writeln('');
+       writeln('Нажмите Enter для продолжения...');
+       readln();
+       clrscr;
+       end;
 end;
 
 //основная программа
 begin
   window(0, 0, 45, 45);
   clrscr;
-  UpLim := 10;
-  LowLim := 1;
-  step := 1;
+  checkSim := false;
+  checkLowLim := false;
+  checkUpLim := false;
+  checkStep := false;
   mN := 1;
   while true do 
   begin
@@ -123,7 +144,7 @@ begin
              else
                TextColor(White);
              
-             writeln('[1] - Ввод нижнего предела         || Текущее значние: ', LowLim);
+             writeln('[1] - Ввод нижнего предела         || Текущее значение: ', LowLim);
            end;
         2: begin
              if mN = i then
@@ -131,7 +152,7 @@ begin
              else
                TextColor(White);
              
-             writeln('[2] - Ввод верхнего предела        || Текущее значние: ', UpLim);
+             writeln('[2] - Ввод верхнего предела        || Текущее значение: ', UpLim);
            end;
         3: begin
              if mN = i then
@@ -139,7 +160,7 @@ begin
              else
                TextColor(White);
              
-             writeln('[3] - Ввод шага интегрирования     || Текущее значние: ', step);
+             writeln('[3] - Ввод шага интегрирования     || Текущее значение: ', step);
            end;
         4: begin
              if mN = i then
@@ -202,6 +223,8 @@ begin
                 clrscr;
                 writeln('Ввод нижнего предела:');
                 Readln(LowLim);
+                checkLowLim := true;
+                checkSim := false;
                 clrscr;
               end;
             2: 
@@ -209,6 +232,8 @@ begin
                 clrscr;
                 writeln('Ввод верхнего предела:');
                 Readln(UpLim);
+                checkUpLim := true;
+                checkSim := false;
                 clrscr;
               end;
             3:
@@ -216,6 +241,8 @@ begin
                 clrscr;
                 writeln('Ввод шага интегрирования');
                 Readln(step);
+                checkStep := true;
+                checkSim := false;
                 clrscr;
               end;
             4: CheckData(LowLim, UpLim, step); // проверка данных
